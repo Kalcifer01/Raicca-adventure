@@ -1009,59 +1009,60 @@ function spawnBulletsForPhase(phase) {
   const h = canvas.height;
 
   // Padrão de projéteis: combinação das 4 cores, mas a CORRETA vem mais lenta (para poder tocar)
-  // Projéteis ERRADOS são rápidos e danosos
-  // Projéteis CORRETOS são mais lentos e brilham
+  // Projéteis ERRADOS são lentos e fáceis de desviar
+  // Projéteis CORRETOS são ainda mais lentos e brilham
   const patterns = [
     // Fase 0 (VERMELHO): projéteis horizontais da esquerda
     () => {
-      for (let i = 0; i < 5; i++) {
-        const y = 45 + i * 20;
-        // projétil errado
-        if (i !== 2) colorBattle.bullets.push({ x: -8, y, dx: 1.8 + Math.random()*0.5, dy: 0, color: allColors[i % 4 === 0 ? 2 : i % 4], size: 4, correct: false });
-        // projétil correto no meio, mais lento
-        else colorBattle.bullets.push({ x: -8, y, dx: 1.0, dy: 0, color: targetColor, size: 5, correct: true, glow: true });
-      }
-      // Alguns projéteis de baixo para cima
+      // Menos projéteis horizontais (apenas 3) com espaçamento maior
       for (let i = 0; i < 3; i++) {
-        const x = 50 + i * 60;
-        colorBattle.bullets.push({ x, y: h + 8, dx: 0, dy: -2.2, color: allColors[(i+1) % 4], size: 4, correct: false });
+        const y = 50 + i * 30;
+        // projétil correto no meio, os outros são errados
+        if (i === 1) {
+          colorBattle.bullets.push({ x: -8, y, dx: 0.7, dy: 0, color: targetColor, size: 5, correct: true, glow: true });
+        } else {
+          colorBattle.bullets.push({ x: -8, y, dx: 1.2, dy: 0, color: allColors[i === 0 ? 1 : 2], size: 4, correct: false });
+        }
       }
+      // Apenas 1 projétil subindo lentamente
+      colorBattle.bullets.push({ x: w / 2, y: h + 8, dx: 0, dy: -1.2, color: 'blue', size: 4, correct: false });
     },
     // Fase 1 (VERDE): projéteis diagonais
     () => {
-      for (let i = 0; i < 4; i++) {
-        colorBattle.bullets.push({ x: -8, y: 30 + i * 30, dx: 2.0, dy: 0.4 * (i % 2 === 0 ? 1 : -1), color: allColors[(i+2) % 4], size: 4, correct: false });
-      }
+      // Apenas 2 errados vindo da esquerda
+      colorBattle.bullets.push({ x: -8, y: 40, dx: 1.2, dy: 0.2, color: 'red', size: 4, correct: false });
+      colorBattle.bullets.push({ x: -8, y: 110, dx: 1.2, dy: -0.2, color: 'blue', size: 4, correct: false });
+      
       // Correto: vem da direita devagar
-      colorBattle.bullets.push({ x: w + 8, y: 95, dx: -1.0, dy: 0, color: targetColor, size: 5, correct: true, glow: true });
-      // Extras de topo
-      for (let i = 0; i < 3; i++) {
-        colorBattle.bullets.push({ x: 40 + i * 70, y: -8, dx: 0.3*(i-1), dy: 2.0, color: allColors[i % 4], size: 4, correct: false });
-      }
+      colorBattle.bullets.push({ x: w + 8, y: 80, dx: -0.7, dy: 0, color: targetColor, size: 5, correct: true, glow: true });
+      
+      // Apenas 1 descendo do topo
+      colorBattle.bullets.push({ x: w / 2 - 30, y: -8, dx: 0, dy: 1.2, color: 'yellow', size: 4, correct: false });
     },
     // Fase 2 (AZUL): ondas circulares
     () => {
-      const cx = w / 2, cy = 90;
-      for (let a = 0; a < 8; a++) {
-        const angle = (a / 8) * Math.PI * 2;
-        const c = (a === 3) ? targetColor : allColors[a % 4];
-        const correct = a === 3;
-        const speed = correct ? 0.8 : 1.8;
+      const cx = w / 2, cy = 80;
+      // Reduzido de 8 para 5 projéteis no círculo, velocidade bem mais lenta
+      for (let a = 0; a < 5; a++) {
+        const angle = (a / 5) * Math.PI * 2;
+        const c = (a === 2) ? targetColor : allColors[a % 4];
+        const correct = a === 2;
+        const speed = correct ? 0.5 : 1.1;
         colorBattle.bullets.push({ x: cx, y: cy, dx: Math.cos(angle)*speed, dy: Math.sin(angle)*speed, color: c, size: correct ? 5 : 4, correct, glow: correct });
       }
     },
     // Fase 3 (AMARELO): chuva do topo
     () => {
-      for (let i = 0; i < 6; i++) {
-        const x = 20 + i * 36;
-        const c = (i === 3) ? targetColor : allColors[i % 4];
-        const correct = i === 3;
-        const speed = correct ? 1.0 : 2.5;
+      // Apenas 4 verticais com boa separação
+      for (let i = 0; i < 4; i++) {
+        const x = 35 + i * 50;
+        const correct = i === 2;
+        const c = correct ? targetColor : allColors[i % 4];
+        const speed = correct ? 0.6 : 1.3;
         colorBattle.bullets.push({ x, y: -8, dx: 0, dy: speed, color: c, size: correct ? 5 : 4, correct, glow: correct });
       }
-      // Extras laterais
-      colorBattle.bullets.push({ x: -8, y: 80, dx: 2.0, dy: 0, color: 'red', size: 4, correct: false });
-      colorBattle.bullets.push({ x: w+8, y: 65, dx: -2.0, dy: 0, color: 'blue', size: 4, correct: false });
+      // Apenas 1 projétil lateral extra lento
+      colorBattle.bullets.push({ x: -8, y: 80, dx: 1.0, dy: 0, color: 'red', size: 4, correct: false });
     }
   ];
 
