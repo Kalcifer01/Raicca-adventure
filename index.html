@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#181824" />
+  <meta name="description" content="Raicca's Adventure - Retro GBA Edition" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <title>Raicca's Adventure</title>
+  <!-- Fonte Retro do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="gba-console">
+    <!-- Tela do Jogo -->
+    <div id="gba-screen-wrapper">
+      <canvas id="game-canvas"></canvas>
+      
+      <!-- Caixa de Diálogo Retro estilo GBA -->
+      <div id="gba-dialogue-box" class="hidden">
+        <div id="gba-dialogue-text"></div>
+        <div id="gba-input-area" class="hidden">
+          <input type="text" id="gba-text-input" autocomplete="off" placeholder="Digite aqui..." />
+          <button id="gba-btn-submit">IR</button>
+        </div>
+        <div id="gba-dialogue-arrow">▼</div>
+      </div>
+    </div>
+
+    <!-- Controles do GBA -->
+    <div id="gba-controls">
+      <!-- D-Pad (Direcional) -->
+      <div id="dpad-container">
+        <div class="dpad-btn up" id="btn-up">▲</div>
+        <div class="dpad-btn left" id="btn-left">◀</div>
+        <div class="dpad-btn right" id="btn-right">▶</div>
+        <div class="dpad-btn down" id="btn-down">▼</div>
+        <div class="dpad-center"></div>
+      </div>
+
+      <!-- Botões Select & Start no Centro -->
+      <div id="system-controls">
+        <div class="system-btn-wrapper">
+          <button class="system-btn" id="btn-select">VOLTAR</button>
+          <span>SELECT</span>
+        </div>
+        <div class="system-btn-wrapper">
+          <button class="system-btn" id="btn-start">START</button>
+          <span>START</span>
+        </div>
+      </div>
+
+      <!-- Botões A & B de Ação -->
+      <div id="action-controls">
+        <div class="action-btn-wrapper">
+          <button class="action-btn b-btn" id="btn-b">B</button>
+          <span>B</span>
+        </div>
+        <div class="action-btn-wrapper">
+          <button class="action-btn a-btn" id="btn-a">A</button>
+          <span>A</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+
+</html>

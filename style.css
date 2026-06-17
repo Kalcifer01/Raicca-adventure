@@ -1,0 +1,582 @@
+/* style.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation; /* Evita delay de 300ms no iOS/Android */
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: radial-gradient(circle, #1e1e30 0%, #0c0c14 100%);
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  overflow: hidden;
+  overscroll-behavior: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Impede bounce no iOS */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* ═══════════════════════════════
+   CONSOLE GBA SHELL (CONTAINER)
+═══════════════════════════════ */
+#gba-console {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  max-height: 820px;
+  background: linear-gradient(135deg, #ec407a 0%, #d81b60 50%, #ad1457 100%);
+  border-radius: 40px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+              inset 0 4px 10px rgba(255, 255, 255, 0.2), 
+              inset 0 -10px 20px rgba(0, 0, 0, 0.4);
+  border: 4px solid #c2185b;
+  justify-content: space-between;
+  gap: 12px;
+  /* Garante que não ultrapassa a tela em mobile */
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════
+   TELA DO CONSOLE
+═══════════════════════════════ */
+#gba-screen-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2.3; /* Proporção ideal para caber mapa + caixa diálogo */
+  background-color: #111;
+  border-radius: 12px;
+  border: 18px solid #222; /* Bezel grosso retrô */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8),
+              0 4px 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Marcação discreta de "GAME BOY" no bezel */
+#gba-screen-wrapper::after {
+  content: "GAME BOY ADVANCE";
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 6px;
+  color: #555;
+  letter-spacing: 2px;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background-color: #000;
+}
+
+/* ═══════════════════════════════
+   CAIXA DE DIÁLOGO GBA
+═══════════════════════════════ */
+#gba-dialogue-box {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  background: #f8f8f8;
+  border: 3px solid #183058; /* Borda dupla estilo Pokémon */
+  outline: 2px solid #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  font-family: 'Press Start 2P', monospace;
+  color: #101010;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 70px;
+  z-index: 10;
+}
+
+#gba-dialogue-text {
+  font-size: 8px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  flex-grow: 1;
+}
+
+#gba-dialogue-arrow {
+  align-self: flex-end;
+  font-size: 8px;
+  color: #880000;
+  animation: bounce 0.6s infinite alternate;
+  margin-top: 4px;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(3px); }
+}
+
+/* Área de Input de Texto */
+#gba-input-area {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+#gba-text-input {
+  flex-grow: 1;
+  background-color: #eee;
+  border: 2px solid #183058;
+  outline: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  padding: 6px 8px;
+  color: #000;
+  border-radius: 4px;
+  text-transform: uppercase; /* Charadas ficam fáceis em maiúsculas */
+}
+
+#gba-btn-submit {
+  background-color: #c84c0c;
+  color: #fff;
+  border: 2px solid #183058;
+  padding: 6px 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#gba-btn-submit:active {
+  transform: scale(0.95);
+  background-color: #983404;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ═══════════════════════════════
+   CONTROLES / BOTOES GBA
+═══════════════════════════════ */
+#gba-controls {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1.2fr;
+  align-items: center;
+  width: 100%;
+  padding: 10px 0;
+  gap: 12px;
+}
+
+/* ── D-PAD (DIRECIONAIS) ── */
+#dpad-container {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto;
+}
+
+.dpad-btn {
+  position: absolute;
+  background-color: #2b2b2b;
+  color: #444;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid #1a1a1a;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.dpad-btn:active {
+  background-color: #1a1a1a;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.dpad-btn.up {
+  top: 0;
+  left: 38px;
+  width: 34px;
+  height: 38px;
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
+}
+
+.dpad-btn.down {
+  bottom: 0;
+  left: 38px;
+  width: 34px;
+  height: 38px;
+  border-radius: 0 0 6px 6px;
+  border-top: none;
+}
+
+.dpad-btn.left {
+  top: 38px;
+  left: 0;
+  width: 38px;
+  height: 34px;
+  border-radius: 6px 0 0 6px;
+  border-right: none;
+}
+
+.dpad-btn.right {
+  top: 38px;
+  right: 0;
+  width: 38px;
+  height: 34px;
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.dpad-center {
+  position: absolute;
+  top: 38px;
+  left: 38px;
+  width: 34px;
+  height: 34px;
+  background-color: #2b2b2b;
+  z-index: 2;
+}
+
+/* ── BOTÕES SYSTEM (SELECT/START) ── */
+#system-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-direction: row;
+  margin-top: 30px;
+}
+
+.system-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.system-btn-wrapper span {
+  font-size: 6px;
+  color: #f8bbd0;
+  letter-spacing: 0.5px;
+}
+
+.system-btn {
+  background-color: #7b7b7b;
+  border: 1px solid #444;
+  border-radius: 12px;
+  width: 44px;
+  height: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  transform: rotate(-25deg);
+  font-size: 5px;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.system-btn:active {
+  background-color: #444;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* ── BOTÕES A / B ── */
+#action-controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  transform: rotate(-15deg);
+  margin-left: 10px;
+}
+
+.action-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-btn-wrapper span {
+  font-size: 8px;
+  color: #f8bbd0;
+  transform: rotate(15deg);
+  font-weight: bold;
+}
+
+.action-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #2f1754;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
+}
+
+.b-btn {
+  background-color: #9c27b0; /* Roxo */
+}
+
+.b-btn:active {
+  background-color: #7b1fa2;
+}
+
+.a-btn {
+  background-color: #e91e63; /* Rosa/Vermelho */
+  margin-top: -8px; /* desalinhado clássico GBA */
+}
+
+.a-btn:active {
+  background-color: #c2185b;
+}
+
+/* ═══════════════════════════════
+   AJUSTES RESPONSIVOS MOBILE
+═══════════════════════════════ */
+/* ═══════════════════════════════════
+   AJUSTES RESPONSIVOS MOBILE (480px)
+═══════════════════════════════════ */
+@media (max-width: 480px) {
+  #gba-console {
+    padding: 14px;
+    border-radius: 24px;
+    border: 4px solid #c2185b;
+    width: 100%;
+    max-width: 100vw;
+    height: 100svh; /* svh = small viewport height, ignora barra de endereço */
+    max-height: 100svh;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    gap: 10px;
+  }
+
+  #gba-screen-wrapper {
+    border: 10px solid #222;
+    /* Ocupa o máximo de espaço disponível */
+    flex: 1;
+    aspect-ratio: unset;
+    min-height: 0;
+  }
+
+  #gba-controls {
+    gap: 4px;
+    padding: 4px 0;
+    flex-shrink: 0;
+  }
+
+  /* D-pad maior para dedos */
+  #dpad-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .dpad-btn.up {
+    width: 32px;
+    height: 36px;
+    left: 34px;
+    font-size: 9px;
+  }
+
+  .dpad-btn.down {
+    width: 32px;
+    height: 36px;
+    left: 34px;
+    font-size: 9px;
+  }
+
+  .dpad-btn.left {
+    width: 36px;
+    height: 32px;
+    top: 34px;
+    font-size: 9px;
+  }
+
+  .dpad-btn.right {
+    width: 36px;
+    height: 32px;
+    top: 34px;
+    font-size: 9px;
+  }
+
+  .dpad-center {
+    width: 32px;
+    height: 32px;
+    top: 34px;
+    left: 34px;
+  }
+
+  /* Botões A/B maiores para toque fácil */
+  .action-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 9px;
+  }
+
+  /* Botões SELECT/START */
+  .system-btn {
+    width: 42px;
+    height: 12px;
+    font-size: 4px;
+  }
+
+  #system-controls {
+    margin-top: 20px;
+  }
+
+  /* Caixa de diálogo menor em mobile */
+  #gba-dialogue-box {
+    padding: 8px 10px;
+    min-height: 60px;
+  }
+
+  #gba-dialogue-text {
+    font-size: 7px;
+  }
+}
+
+/* ═══════════════════════════════════
+   TELAS MUITO PEQUENAS (< 360px)
+═══════════════════════════════════ */
+@media (max-width: 360px) {
+  #gba-console {
+    padding: 10px;
+    border-radius: 18px;
+    gap: 8px;
+  }
+
+  #gba-screen-wrapper {
+    border: 8px solid #222;
+  }
+
+  #dpad-container {
+    width: 88px;
+    height: 88px;
+  }
+
+  .dpad-btn.up, .dpad-btn.down {
+    width: 28px;
+    height: 30px;
+    left: 30px;
+  }
+
+  .dpad-btn.left, .dpad-btn.right {
+    width: 30px;
+    height: 28px;
+    top: 30px;
+  }
+
+  .dpad-center {
+    width: 28px;
+    height: 28px;
+    top: 30px;
+    left: 30px;
+  }
+
+  .action-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 8px;
+  }
+
+  .system-btn {
+    width: 36px;
+  }
+
+  #gba-dialogue-text {
+    font-size: 6px;
+  }
+}
+
+/* ═══════════════════════════════════
+   TELAS LANDSCAPE (deitado)
+═══════════════════════════════════ */
+@media (max-height: 500px) and (orientation: landscape) {
+  #gba-console {
+    flex-direction: row;
+    max-width: 100vw;
+    max-height: 100svh;
+    height: 100svh;
+    border-radius: 20px;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #gba-screen-wrapper {
+    aspect-ratio: 3 / 2;
+    height: 100%;
+    flex: 1.5;
+  }
+
+  #gba-controls {
+    flex: 1;
+    height: 100%;
+    align-items: center;
+    padding: 0;
+  }
+
+  #dpad-container {
+    width: 90px;
+    height: 90px;
+  }
+
+  #system-controls {
+    margin-top: 8px;
+  }
+}
+
+/* Chuva de Aishiteru no Navegador */
+.floating-aishiteru {
+  position: fixed;
+  top: -50px;
+  color: #ff4081;
+  font-family: 'Press Start 2P', monospace;
+  pointer-events: none;
+  z-index: 9999;
+  animation: fallDown linear forwards;
+  text-shadow: 0 0 8px rgba(255, 64, 129, 0.7);
+  white-space: nowrap;
+}
+
+@keyframes fallDown {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(115vh) rotate(10deg);
+  }
+}
