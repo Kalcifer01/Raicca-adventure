@@ -46,8 +46,8 @@ const player = {
 const vitoria = {
   x: 7 * 16,
   y: 2 * 16,
-  hp: 10, // 5 golpes de espada (2 HP por golpe)
-  maxHp: 10,
+  hp: 6, // 3 golpes de espada (2 HP por golpe)
+  maxHp: 6,
   colorHair: '#1a0800',  // Cabelo preto escuro (cacheado)
   colorSkin: '#5c3317',  // Pele negra
   colorDress: '#6a0dad', // Vestido roxo de vilã
@@ -1238,16 +1238,16 @@ function updateVitoriaBoss() {
 
   vitoria.floatTimer += 0.05;
 
-  // Movimento errático: Vitória se move lentamente pela sala perseguindo Raicca
+  // Movimento errático: Vitória se move lentamente pela sala
   const dx = player.x - vitoria.x;
   const dy = player.y - vitoria.y;
   const dist = Math.hypot(dx, dy);
-  if (dist > 40) { // Só persegue se estiver longe
-    vitoria.x += (dx / dist) * 0.6;
-    vitoria.y += (dy / dist) * 0.6;
+  if (dist > 40) { // Só persegue se estiver longe, velocidade reduzida para 0.35
+    vitoria.x += (dx / dist) * 0.35;
+    vitoria.y += (dy / dist) * 0.35;
   } else {
-    // Patrulha lateral se estiver perto
-    vitoria.x += Math.sin(vitoria.floatTimer * 1.2) * 0.8;
+    // Patrulha lateral se estiver perto, velocidade reduzida para 0.4
+    vitoria.x += Math.sin(vitoria.floatTimer * 1.2) * 0.4;
   }
 
   // Flutua suavemente no eixo Y
@@ -1259,11 +1259,11 @@ function updateVitoriaBoss() {
 
   vitoria.shootCooldown--;
   if (vitoria.shootCooldown <= 0) {
-    vitoria.shootCooldown = 150; // Atira a cada 2.5s (era 90 = 1.5s)
+    vitoria.shootCooldown = 240; // Atira a cada 4 segundos (antes era 150 = 2.5s)
     
-    // Atirar coração teleguiado em direção ao jogador
+    // Atirar coração teleguiado em direção ao jogador, velocidade reduzida para 0.9
     const angle = Math.atan2(player.y - vitoria.y, player.x - vitoria.x);
-    const speed = 1.4;
+    const speed = 0.9;
     projectiles.push({
       x: vitoria.x + 8,
       y: vitoria.y + 8,
@@ -1273,22 +1273,6 @@ function updateVitoriaBoss() {
       size: 4,
       target: 'player'
     });
-
-    // Chance reduzida de summonar guarda
-    if (enemies.length < 1 && Math.random() < 0.25) {
-      enemies.push({
-        x: (Math.random() > 0.5 ? 2 : 12) * 16,
-        y: 6 * 16,
-        tileX: 0, tileY: 0,
-        hp: 3,
-        type: 'summon',
-        dir: 'up',
-        isAggro: true,
-        color: '#9c27b0',
-        speed: 0.8,
-        flashRed: 0
-      });
-    }
   }
 
   // Piscar vermelho
