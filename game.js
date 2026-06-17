@@ -577,10 +577,11 @@ function handleButtonA() {
     room1ChestOpened = true;
     maps[1][fy][fx] = 0; // Remove baú
     inventory.push({ name: 'Espada de Bronze', desc: 'Útil para cortar arbustos de espinhos e golpear guardas. [Botão A para bater]', type: 'weapon' });
+    inventory.push({ name: 'Maçã', desc: 'Cura totalmente seu HP. Pode ser usada equipando no Inventário.', type: 'heal' });
     showDialogue([
       "Você abriu o baú antigo!",
-      "Você obteve a ESPADA DE BRONZE!",
-      "Abra o Inventário pressionando [SELECT], selecione a espada com o direcional e aperte [A] para equipá-la."
+      "Você obteve a ESPADA DE BRONZE e uma MAÇÃ!",
+      "Abra o Inventário pressionando [SELECT], selecione a espada ou maçã com o direcional e aperte [A] para equipar/usar."
     ]);
     hasInteracted = true;
   }
@@ -756,10 +757,15 @@ function handleButtonA() {
 
   // Se o item equipado for uma Poção de Vida, e NÃO interagiu com nada, cura
   if (!hasInteracted && equippedItemIndex !== -1 && inventory[equippedItemIndex].type === 'heal') {
+    const item = inventory[equippedItemIndex];
     player.hp = player.maxHp;
     inventory.splice(equippedItemIndex, 1);
     equippedItemIndex = -1;
-    showDialogue(["Você bebeu a Poção de Vida!", "Seu HP foi totalmente restaurado!"]);
+    if (item.name === 'Maçã') {
+      showDialogue(["Você comeu a Maçã!", "Seu HP foi totalmente restaurado!"]);
+    } else {
+      showDialogue(["Você bebeu a Poção de Vida!", "Seu HP foi totalmente restaurado!"]);
+    }
     return;
   }
 
@@ -1303,11 +1309,13 @@ function defeatVitoria() {
     "Ela foge chorando para os jardins do castelo, deixando a chave da jaula para trás.",
     "Você salvou o Eduardo!"
   ], () => {
+    hideDialogue(); // Esconde a caixa de diálogo enquanto Eduardo caminha
     animateEduardoWalk();
   });
 }
 
 function animateEduardoWalk() {
+  gameState = 'CUTSCENE'; // Entra em modo cutscene (bloqueia inputs do jogador)
   // Eduardo caminha livre até Raicca
   let walkInterval = setInterval(() => {
     if (eduardo.y < player.y - 16) {
@@ -2021,7 +2029,9 @@ function showDialogue(lines, callback = null) {
 function nextDialogue() {
   if (dialogueQueue.length === 0) {
     if (dialogueCallback) {
-      dialogueCallback();
+      const cb = dialogueCallback;
+      dialogueCallback = null; // Evita que o callback seja disparado múltiplas vezes por cliques seguidos
+      cb();
     } else {
       hideDialogue();
       gameState = `ROOM_${currentRoom}`;
